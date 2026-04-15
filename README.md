@@ -1,9 +1,10 @@
 # Onese-Gachogu-Irungu-App
 Onese Gachogu Irungu
 
-#Running the Project
+# Running the App
 npm start => This will serve the angular project at port 4200 and start the json server
 
-#Log In 
+# Log In
 Email => admin@kcb.co.ke
+
 Default Password => kcb123
