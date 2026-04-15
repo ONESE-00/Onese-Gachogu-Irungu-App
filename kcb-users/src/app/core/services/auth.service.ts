@@ -19,10 +19,10 @@ export class AuthService {
       .get<User[]>(`${this.API}/users`)
       .pipe(
         switchMap((users) => {
-          if (!users || users.length === 0) {
+          const user = users.find((u) => u.email === username);
+          if (!user || password !== 'kcb123') {
             return throwError(() => new Error('Invalid username or password.'));
           }
-          const user = users[0];
           if (user.isLocked) {
             return throwError(
               () => new Error('Your account is locked. Please contact your administrator.')

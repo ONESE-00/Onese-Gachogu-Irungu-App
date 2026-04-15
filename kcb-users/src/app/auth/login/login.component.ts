@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Redirect if already logged in
@@ -45,15 +45,9 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     const { username, password } = this.loginForm.value;
-    if (password.toLowerCase() !== 'kcb123') {
-      this.isLoading = false;
-      this.errorMessage = 'Invalid username or password.';
-      return;
-    }
+
     this.authService.login(username, password).subscribe({
-      next: (user) => {
-        if(user?.isLocked)  this.errorMessage = 'Your account is locked. Please contact your administrator.';
-        console.log('Login successful:', user);
+      next: () => {
         this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
@@ -64,6 +58,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
+ 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
