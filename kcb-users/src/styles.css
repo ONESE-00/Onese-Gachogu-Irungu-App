@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 @import "tailwindcss";
+@source "./app";
 
 @theme {
   /* Brand colours */

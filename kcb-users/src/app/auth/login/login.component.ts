@@ -45,9 +45,15 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     const { username, password } = this.loginForm.value;
-
+    if (password.toLowerCase() !== 'kcb123') {
+      this.isLoading = false;
+      this.errorMessage = 'Invalid username or password.';
+      return;
+    }
     this.authService.login(username, password).subscribe({
-      next: () => {
+      next: (user) => {
+        if(user?.isLocked)  this.errorMessage = 'Your account is locked. Please contact your administrator.';
+        console.log('Login successful:', user);
         this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
