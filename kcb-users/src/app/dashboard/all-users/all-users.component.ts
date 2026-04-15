@@ -63,7 +63,7 @@ export class AllUsersComponent implements OnInit {
     this.isLoading = false;
   }
 
-  viewUser(id: number): void {
+  viewUser(id: any): void {
     this.router.navigate(['/dashboard/user-profile', id]);
   }
 

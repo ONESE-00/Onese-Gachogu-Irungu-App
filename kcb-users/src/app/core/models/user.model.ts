@@ -59,21 +59,21 @@ export interface Analytics {
 }
 
 export interface Branch {
-  id: number;
+  id: number | string;
   name: string;
   subsidiaryId: number;
   code: string;
 }
 
 export interface Subsidiary {
-  id: number;
+  id: number | string;
   name: string;
   code: string;
   country: string;
 }
 
 export interface Role {
-  id: number;
+  id: number | string;
   name: string;
   code: string;
   description: string;

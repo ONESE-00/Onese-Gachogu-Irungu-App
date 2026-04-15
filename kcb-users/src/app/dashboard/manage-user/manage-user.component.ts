@@ -77,9 +77,9 @@ export class ManageUserComponent implements OnInit {
     this.errorMessage = '';
 
     const v = this.userForm.value;
-    const selectedBranch = this.branches.find((b) => b.id === Number(v.branchId));
-    const selectedSub = this.subsidiaries.find((s) => s.id === Number(v.subsidiaryId));
-    const selectedRole = this.roles.find((r) => r.id === Number(v.roleId));
+    const selectedBranch = this.branches.find((b) => Number(b.id) === Number(v.branchId));
+    const selectedSub = this.subsidiaries.find((s) => Number(s.id) === Number(v.subsidiaryId));
+    const selectedRole = this.roles.find((r) => Number(r.id) === Number(v.roleId));
 
     const username = `${v.firstName.toLowerCase()}.${v.lastName.toLowerCase()}`.replace(/\s+/g, '');
 
@@ -108,6 +108,10 @@ export class ManageUserComponent implements OnInit {
         this.successMessage = `User ${created.firstName} ${created.lastName} has been onboarded successfully.`;
         this.userForm.reset();
         this.filteredBranches = [];
+        //navigate back to user list after a short delay
+        setTimeout(() => {
+          this.router.navigate(['/dashboard/all-users']);
+        }, 2000);
       },
       error: () => {
         this.isLoading = false;

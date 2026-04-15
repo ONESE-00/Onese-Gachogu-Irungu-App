@@ -29,7 +29,7 @@ export class UserService {
     return this.http.get<User[]>(`${this.API}/users`);
   }
 
-  getUserById(userId: number): Observable<User> {
+  getUserById(userId: string): Observable<User> {
     return this.http.get<User>(`${this.API}/users/${userId}`);
   }
 

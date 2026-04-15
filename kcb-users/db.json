@@ -189,6 +189,25 @@
       "isLocked": false,
       "createdAt": "2026-04-15",
       "id": "LILiI5k1RsM"
+    },
+    {
+      "firstName": "David ",
+      "lastName": "Nthenya",
+      "email": "dnthenya@gmail.com",
+      "username": "david.nthenya",
+      "phoneNumber": "0757202111",
+      "idNumber": "39317549",
+      "roleId": 1,
+      "role": "System Administrator",
+      "branchId": 1,
+      "branch": "Nairobi Main",
+      "subsidiaryId": 1,
+      "subsidiary": "KCB Kenya",
+      "password": "kcb123",
+      "isActive": true,
+      "isLocked": false,
+      "createdAt": "2026-04-15",
+      "id": "BYvpNyhzQJM"
     }
   ],
   "analytics": {
