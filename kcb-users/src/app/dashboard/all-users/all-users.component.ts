@@ -52,13 +52,15 @@ export class AllUsersComponent implements OnInit {
     }
     this.isLoading = true;
     // JSON Server supports full-text search via `q` param, but we use firstName filter here
-    this.userService.searchUsers({ firstName: trimmed }).subscribe({
-      next: (data) => {
-        this.users = data;
-        this.isLoading = false;
-      },
-      error: () => (this.isLoading = false),
-    });
+    // this.userService.searchUsers({ firstName: trimmed }).subscribe({
+    //   next: (data) => {
+    //     this.users = data;
+    //     this.isLoading = false;
+    //   },
+    //   error: () => (this.isLoading = false),
+    // });
+    this.users = this.users.filter((u) => u.firstName.toLowerCase().includes(trimmed.toLowerCase()) || u.lastName.toLowerCase().includes(trimmed.toLowerCase()) || u.email.toLowerCase().includes(trimmed.toLowerCase()));
+    this.isLoading = false;
   }
 
   viewUser(id: number): void {

@@ -16,7 +16,7 @@ export class AuthService {
 
   login(username: string, password: string): Observable<User> {
     return this.http
-      .get<User[]>(`${this.API}/users?username=${username}&password=${password}`)
+      .get<User[]>(`${this.API}/users`)
       .pipe(
         switchMap((users) => {
           if (!users || users.length === 0) {
