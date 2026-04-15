@@ -1,0 +1,237 @@
+<div class="p-6 lg:p-8 max-w-3xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-8">
+    <button (click)="goBack()" class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-brand-blue transition-colors">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <div>
+      <h1 class="page-title">User Profile</h1>
+      <p class="page-subtitle">View and manage user account details</p>
+    </div>
+  </div>
+
+  <!-- Loading skeleton -->
+  @if (isPageLoading) {
+    <div class="card animate-pulse space-y-4">
+      <div class="flex items-center gap-4">
+        <div class="w-20 h-20 rounded-full bg-gray-200"></div>
+        <div class="space-y-2">
+          <div class="h-5 bg-gray-200 rounded w-40"></div>
+          <div class="h-4 bg-gray-200 rounded w-28"></div>
+        </div>
+      </div>
+      @for (i of [1,2,3,4]; track i) {
+        <div class="h-10 bg-gray-100 rounded"></div>
+      }
+    </div>
+  }
+
+  @if (!isPageLoading && user) {
+    <!-- Alerts -->
+    @if (successMessage) {
+      <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2">
+        <span class="material-icons text-green-600 text-base">check_circle_outline</span>
+        <p class="text-green-700 text-sm">{{ successMessage }}</p>
+      </div>
+    }
+    @if (errorMessage) {
+      <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2">
+        <span class="material-icons text-red-500 text-base">error_outline</span>
+        <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+      </div>
+    }
+
+    <!-- Profile Card -->
+    <div class="card mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <!-- Avatar + name -->
+        <div class="flex items-center gap-4">
+          <div class="w-20 h-20 rounded-full bg-brand-blue text-white text-2xl font-bold flex items-center justify-center flex-shrink-0">
+            {{ userInitials }}
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-brand-blue">{{ user.firstName }} {{ user.lastName }}</h2>
+            <p class="text-gray-500 text-sm">{{ user.username }}</p>
+            <div class="flex items-center gap-2 mt-1">
+              @if (user.isLocked) {
+                <span class="badge-locked"><span class="material-icons text-xs mr-1">lock</span>Locked</span>
+              } @else if (user.isActive) {
+                <span class="badge-active">Active</span>
+              } @else {
+                <span class="badge-inactive">Inactive</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        @if (!isEditing) {
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button
+              (click)="startEditing()"
+              class="btn-secondary flex items-center gap-2 text-sm"
+            >
+              <span class="material-icons text-base">edit</span>
+              Edit
+            </button>
+            <button
+              (click)="openLockDialog()"
+              [disabled]="isLockLoading"
+              class="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors duration-200 focus:outline-none"
+              [class.bg-red-50]="!user.isLocked"
+              [class.text-red-600]="!user.isLocked"
+              [class.hover:bg-red-100]="!user.isLocked"
+              [class.bg-green-50]="user.isLocked"
+              [class.text-green-700]="user.isLocked"
+              [class.hover:bg-green-100]="user.isLocked"
+            >
+              @if (isLockLoading) {
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              } @else {
+                <span class="material-icons text-base">{{ user.isLocked ? 'lock_open' : 'lock' }}</span>
+                {{ user.isLocked ? 'Unlock User' : 'Lock User' }}
+              }
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- View Mode: Info grid -->
+      @if (!isEditing) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @for (field of [
+            { label: 'Email', value: user.email, icon: 'mail_outline' },
+            { label: 'Phone', value: user.phoneNumber, icon: 'phone' },
+            { label: 'ID Number', value: user.idNumber, icon: 'badge' },
+            { label: 'Role', value: user.role, icon: 'work_outline' },
+            { label: 'Branch', value: user.branch, icon: 'location_on' },
+            { label: 'Subsidiary', value: user.subsidiary, icon: 'corporate_fare' },
+            { label: 'Member Since', value: user.createdAt, icon: 'calendar_today' }
+          ]; track field.label) {
+            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+              <span class="material-icons text-brand-blue/50 text-base mt-0.5">{{ field.icon }}</span>
+              <div>
+                <p class="text-xs text-gray-400 font-medium">{{ field.label }}</p>
+                <p class="text-sm text-gray-800 font-medium mt-0.5">{{ field.value }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Edit Mode: Form -->
+      @if (isEditing) {
+        <form [formGroup]="editForm" (ngSubmit)="onSave()" novalidate>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- First Name -->
+            <div>
+              <label class="form-label">First Name</label>
+              <input type="text" formControlName="firstName" class="form-input" />
+              @if (f['firstName'].invalid && f['firstName'].touched) {
+                <p class="form-error">Required, min 2 characters.</p>
+              }
+            </div>
+            <!-- Last Name -->
+            <div>
+              <label class="form-label">Last Name</label>
+              <input type="text" formControlName="lastName" class="form-input" />
+              @if (f['lastName'].invalid && f['lastName'].touched) {
+                <p class="form-error">Required, min 2 characters.</p>
+              }
+            </div>
+            <!-- Email -->
+            <div>
+              <label class="form-label">Email</label>
+              <input type="email" formControlName="email" class="form-input" />
+              @if (f['email'].invalid && f['email'].touched) {
+                <p class="form-error">Valid email required.</p>
+              }
+            </div>
+            <!-- Phone -->
+            <div>
+              <label class="form-label">Phone Number</label>
+              <input type="tel" formControlName="phoneNumber" class="form-input" />
+              @if (f['phoneNumber'].invalid && f['phoneNumber'].touched) {
+                <p class="form-error">Valid phone number required.</p>
+              }
+            </div>
+            <!-- ID Number -->
+            <div class="sm:col-span-2">
+              <label class="form-label">ID Number</label>
+              <input type="text" formControlName="idNumber" class="form-input" />
+              @if (f['idNumber'].invalid && f['idNumber'].touched) {
+                <p class="form-error">Required.</p>
+              }
+            </div>
+            <!-- Subsidiary -->
+            <div>
+              <label class="form-label">Subsidiary</label>
+              <select formControlName="subsidiaryId" class="form-input">
+                @for (sub of subsidiaries; track sub.id) {
+                  <option [value]="sub.id">{{ sub.name }}</option>
+                }
+              </select>
+            </div>
+            <!-- Branch -->
+            <div>
+              <label class="form-label">Branch</label>
+              <select formControlName="branchId" class="form-input">
+                @for (branch of filteredBranches; track branch.id) {
+                  <option [value]="branch.id">{{ branch.name }}</option>
+                }
+              </select>
+            </div>
+            <!-- Role -->
+            <div class="sm:col-span-2">
+              <label class="form-label">Role</label>
+              <select formControlName="roleId" class="form-input">
+                @for (role of roles; track role.id) {
+                  <option [value]="role.id">{{ role.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6 justify-end">
+            <button type="button" (click)="cancelEditing()" class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="isEditLoading"
+              class="btn-primary flex items-center gap-2"
+            >
+              @if (isEditLoading) {
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                Saving...
+              } @else {
+                <span class="material-icons text-base">save</span>
+                Save Changes
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+
+  <!-- Lock/Unlock Confirmation Dialog -->
+  @if (showLockDialog && user) {
+    <app-confirm-dialog
+      [title]="user.isLocked ? 'Unlock User' : 'Lock User'"
+      [message]="user.isLocked
+        ? 'Are you sure you want to unlock ' + user.firstName + ' ' + user.lastName + '? They will regain access to the system.'
+        : 'Are you sure you want to lock ' + user.firstName + ' ' + user.lastName + '? They will no longer be able to log in.'"
+      [confirmLabel]="user.isLocked ? 'Unlock' : 'Lock User'"
+      [confirmStyle]="user.isLocked ? 'primary' : 'danger'"
+      (confirmed)="onLockConfirm()"
+      (cancelled)="onLockCancel()"
+    ></app-confirm-dialog>
+  }
+</div>

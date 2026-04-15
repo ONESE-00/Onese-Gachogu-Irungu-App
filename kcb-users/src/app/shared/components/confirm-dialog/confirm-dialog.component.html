@@ -1,0 +1,43 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="onCancel()"></div>
+
+  <!-- Dialog Card -->
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 z-10">
+    <!-- Icon -->
+    <div class="flex items-center justify-center mb-4">
+      <div class="w-14 h-14 rounded-full flex items-center justify-center"
+           [class.bg-red-100]="confirmStyle === 'danger'"
+           [class.bg-blue-100]="confirmStyle === 'primary'">
+        <span class="material-icons text-2xl"
+              [class.text-red-600]="confirmStyle === 'danger'"
+              [class.text-brand-blue]="confirmStyle === 'primary'">
+          {{ confirmStyle === 'danger' ? 'warning_amber' : 'help_outline' }}
+        </span>
+      </div>
+    </div>
+
+    <h3 class="text-lg font-bold text-brand-blue text-center mb-2">{{ title }}</h3>
+    <p class="text-sm text-gray-500 text-center mb-6">{{ message }}</p>
+
+    <div class="flex gap-3">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="btn-secondary flex-1"
+      >
+        {{ cancelLabel }}
+      </button>
+      <button
+        type="button"
+        (click)="onConfirm()"
+        class="flex-1 font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 focus:outline-none"
+        [class.btn-danger]="confirmStyle === 'danger'"
+        [class.btn-primary]="confirmStyle === 'primary'"
+      >
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

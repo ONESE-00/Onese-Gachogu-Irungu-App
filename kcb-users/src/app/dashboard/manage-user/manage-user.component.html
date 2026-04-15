@@ -1,0 +1,179 @@
+<div class="p-6 lg:p-8 max-w-3xl mx-auto">
+  <!-- Header -->
+  <div class="page-header flex items-center gap-4 mb-8">
+    <button (click)="onCancel()" class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-brand-blue transition-colors">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <div>
+      <h1 class="page-title">Onboard New User</h1>
+      <p class="page-subtitle">Fill in the details below to create a new KCB system user</p>
+    </div>
+  </div>
+
+  @if (successMessage) {
+    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
+      <span class="material-icons text-green-600 mt-0.5">check_circle_outline</span>
+      <div>
+        <p class="text-green-800 font-medium text-sm">User Created!</p>
+        <p class="text-green-700 text-sm mt-0.5">{{ successMessage }}</p>
+        <button (click)="onCancel()" class="text-green-700 underline text-sm mt-1">Go to Users List</button>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2">
+      <span class="material-icons text-red-500 text-base mt-0.5">error_outline</span>
+      <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+    </div>
+  }
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="card">
+      <!-- Section: Personal Info -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-brand-blue uppercase tracking-wide mb-4 flex items-center gap-2">
+          <span class="material-icons text-base text-brand-green">person</span>
+          Personal Information
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- First Name -->
+          <div>
+            <label class="form-label">First Name <span class="text-red-400">*</span></label>
+            <input type="text" formControlName="firstName" class="form-input" placeholder="e.g. Alice" />
+            @if (f['firstName'].invalid && f['firstName'].touched) {
+              <p class="form-error">
+                @if (f['firstName'].errors?.['required']) { First name is required. }
+                @else if (f['firstName'].errors?.['minlength']) { Min 2 characters. }
+              </p>
+            }
+          </div>
+          <!-- Last Name -->
+          <div>
+            <label class="form-label">Last Name <span class="text-red-400">*</span></label>
+            <input type="text" formControlName="lastName" class="form-input" placeholder="e.g. Wanjiru" />
+            @if (f['lastName'].invalid && f['lastName'].touched) {
+              <p class="form-error">
+                @if (f['lastName'].errors?.['required']) { Last name is required. }
+                @else if (f['lastName'].errors?.['minlength']) { Min 2 characters. }
+              </p>
+            }
+          </div>
+          <!-- Email -->
+          <div>
+            <label class="form-label">Email Address <span class="text-red-400">*</span></label>
+            <input type="email" formControlName="email" class="form-input" placeholder="user@kcb.co.ke" />
+            @if (f['email'].invalid && f['email'].touched) {
+              <p class="form-error">
+                @if (f['email'].errors?.['required']) { Email is required. }
+                @else if (f['email'].errors?.['email']) { Enter a valid email address. }
+              </p>
+            }
+          </div>
+          <!-- Phone Number -->
+          <div>
+            <label class="form-label">Phone Number <span class="text-red-400">*</span></label>
+            <input type="tel" formControlName="phoneNumber" class="form-input" placeholder="+254712345678" />
+            @if (f['phoneNumber'].invalid && f['phoneNumber'].touched) {
+              <p class="form-error">
+                @if (f['phoneNumber'].errors?.['required']) { Phone number is required. }
+                @else if (f['phoneNumber'].errors?.['pattern']) { Enter a valid phone number. }
+              </p>
+            }
+          </div>
+          <!-- ID Number -->
+          <div class="sm:col-span-2">
+            <label class="form-label">National ID / Passport Number <span class="text-red-400">*</span></label>
+            <input type="text" formControlName="idNumber" class="form-input" placeholder="e.g. 30012345" />
+            @if (f['idNumber'].invalid && f['idNumber'].touched) {
+              <p class="form-error">
+                @if (f['idNumber'].errors?.['required']) { ID number is required. }
+                @else if (f['idNumber'].errors?.['minlength']) { Min 5 characters. }
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-100 mb-6"></div>
+
+      <!-- Section: Assignment -->
+      <div>
+        <h3 class="text-sm font-semibold text-brand-blue uppercase tracking-wide mb-4 flex items-center gap-2">
+          <span class="material-icons text-base text-brand-green">corporate_fare</span>
+          Assignment
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Subsidiary -->
+          <div>
+            <label class="form-label">Subsidiary <span class="text-red-400">*</span></label>
+            <select formControlName="subsidiaryId" class="form-input" [disabled]="isRefDataLoading">
+              <option value="">Select Subsidiary</option>
+              @for (sub of subsidiaries; track sub.id) {
+                <option [value]="sub.id">{{ sub.name }}</option>
+              }
+            </select>
+            @if (f['subsidiaryId'].invalid && f['subsidiaryId'].touched) {
+              <p class="form-error">Subsidiary is required.</p>
+            }
+          </div>
+          <!-- Branch -->
+          <div>
+            <label class="form-label">Branch <span class="text-red-400">*</span></label>
+            <select formControlName="branchId" class="form-input" [disabled]="!f['subsidiaryId'].value || isRefDataLoading">
+              <option value="">{{ f['subsidiaryId'].value ? 'Select Branch' : 'Select subsidiary first' }}</option>
+              @for (branch of filteredBranches; track branch.id) {
+                <option [value]="branch.id">{{ branch.name }}</option>
+              }
+            </select>
+            @if (f['branchId'].invalid && f['branchId'].touched) {
+              <p class="form-error">Branch is required.</p>
+            }
+          </div>
+          <!-- Role -->
+          <div class="sm:col-span-2">
+            <label class="form-label">Role <span class="text-red-400">*</span></label>
+            <select formControlName="roleId" class="form-input" [disabled]="isRefDataLoading">
+              <option value="">Select Role</option>
+              @for (role of roles; track role.id) {
+                <option [value]="role.id">{{ role.name }}</option>
+              }
+            </select>
+            @if (f['roleId'].invalid && f['roleId'].touched) {
+              <p class="form-error">Role is required.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Default password notice -->
+      <div class="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center gap-2">
+        <span class="material-icons text-brand-blue text-base">info_outline</span>
+        <p class="text-brand-blue text-xs">The user will be created with default password <strong>kcb123</strong>. They should change it on first login.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 mt-8 justify-end">
+        <button type="button" (click)="onCancel()" class="btn-secondary">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="isLoading || isRefDataLoading"
+          class="btn-primary flex items-center gap-2"
+        >
+          @if (isLoading) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            Creating...
+          } @else {
+            <span class="material-icons text-base">person_add</span>
+            Create User
+          }
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

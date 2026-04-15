@@ -1,0 +1,112 @@
+<div class="p-6 lg:p-8">
+  <!-- Page Header -->
+  <div class="page-header flex items-center justify-between">
+    <div>
+      <h1 class="page-title">User Management</h1>
+      <p class="page-subtitle">Manage all KCB system users across subsidiaries</p>
+    </div>
+    <a routerLink="/dashboard/manage-user" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">person_add</span>
+      Onboard User
+    </a>
+  </div>
+
+  <!-- Analytics Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    @for (card of analyticsCards; track card.key) {
+      <div class="analytics-card">
+        <div class="analytics-icon" [ngClass]="card.color">
+          <span class="material-icons text-2xl">{{ card.icon }}</span>
+        </div>
+        <div>
+          <div class="analytics-value">{{ getAnalyticsValue(card.key) }}</div>
+          <div class="analytics-label">{{ card.label }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-wrapper">
+    <!-- Table toolbar -->
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4">
+      <h2 class="text-base font-semibold text-brand-blue">All Users</h2>
+      <!-- Search -->
+      <div class="relative w-72">
+        <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base">search</span>
+        <input
+          [formControl]="searchControl"
+          type="text"
+          placeholder="Search by first name..."
+          class="form-input pl-9 py-2 text-sm"
+        />
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th class="table-header-cell">Name</th>
+            <th class="table-header-cell">Email</th>
+            <th class="table-header-cell">Role</th>
+            <th class="table-header-cell">Branch</th>
+            <th class="table-header-cell">Subsidiary</th>
+            <th class="table-header-cell">Status</th>
+            <th class="table-header-cell">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (isLoading) {
+            @for (i of [1,2,3,4,5]; track i) {
+              <tr class="table-row">
+                @for (j of [1,2,3,4,5,6,7]; track j) {
+                  <td class="table-cell">
+                    <div class="h-4 bg-gray-100 rounded animate-pulse"></div>
+                  </td>
+                }
+              </tr>
+            }
+          } @else if (users.length === 0) {
+            <tr>
+              <td colspan="7" class="py-16 text-center text-gray-400">
+                <span class="material-icons text-4xl block mb-2">search_off</span>
+                No users found.
+              </td>
+            </tr>
+          } @else {
+            @for (user of users; track user.id) {
+              <tr class="table-row">
+                <td class="table-cell">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-bold flex items-center justify-center flex-shrink-0">
+                      {{ user.firstName[0] }}{{ user.lastName[0] }}
+                    </div>
+                    <span class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</span>
+                  </div>
+                </td>
+                <td class="table-cell text-gray-500">{{ user.email }}</td>
+                <td class="table-cell">{{ user.role }}</td>
+                <td class="table-cell">{{ user.branch }}</td>
+                <td class="table-cell">{{ user.subsidiary }}</td>
+                <td class="table-cell">
+                  <span [class]="getStatusClass(user)">{{ getStatusLabel(user) }}</span>
+                </td>
+                <td class="table-cell">
+                  <button
+                    (click)="viewUser(user.id)"
+                    class="btn-ghost text-xs px-3 py-1.5 flex items-center gap-1"
+                  >
+                    <span class="material-icons text-sm">visibility</span>
+                    View
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

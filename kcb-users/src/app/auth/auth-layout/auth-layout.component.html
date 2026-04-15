@@ -1,0 +1,32 @@
+<div class="min-h-screen bg-gradient-to-br from-brand-blue to-brand-blue-light flex items-center justify-center p-4">
+  <!-- Background pattern -->
+  <div class="absolute inset-0 opacity-5"
+       style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+  </div>
+
+  <!-- Card -->
+  <div class="relative w-full max-w-md">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-3 mb-2">
+        <div class="w-12 h-12 bg-brand-green rounded-xl flex items-center justify-center shadow-lg">
+          <span class="text-white font-bold text-lg">KCB</span>
+        </div>
+        <div class="text-left">
+          <div class="text-white font-bold text-xl leading-tight">Kenya Commercial</div>
+          <div class="text-brand-green font-semibold text-sm">Bank Group</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth card -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8">
+      <router-outlet></router-outlet>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-center text-white/50 text-xs mt-6">
+      &copy; {{ year }} KCB Group. All rights reserved.
+    </p>
+  </div>
+</div>

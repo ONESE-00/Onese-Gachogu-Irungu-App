@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(ng version *)",
+      "Read(//c/Users/X1 Carbon/Documents/ONESE PROJECTS/**)",
+      "Bash(npx @angular/cli --version)",
+      "Bash(ng new *)",
+      "Bash(npm install *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\X1 Carbon\\Documents\\ONESE PROJECTS\\kcb-users"
+    ]
+  }
+}
