@@ -57,6 +57,25 @@
       "isLocked": false,
       "createdAt": "2026-04-15",
       "id": "BYvpNyhzQJM"
+    },
+    {
+      "firstName": "KCB",
+      "lastName": "Admin",
+      "email": "admin@kcb.co.ke",
+      "username": "kcb.admin",
+      "phoneNumber": "0790909090",
+      "idNumber": "90909090",
+      "roleId": 1,
+      "role": "System Administrator",
+      "branchId": 3,
+      "branch": "Mombasa Road",
+      "subsidiaryId": 1,
+      "subsidiary": "KCB Kenya",
+      "password": "kcb123",
+      "isActive": true,
+      "isLocked": false,
+      "createdAt": "2026-04-15",
+      "id": "Yp_45vTBnNM"
     }
   ],
   "analytics": {
