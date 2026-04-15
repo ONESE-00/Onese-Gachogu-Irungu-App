@@ -95,6 +95,21 @@
                 {{ user.isLocked ? 'Unlock User' : 'Lock User' }}
               }
             </button>
+            <button
+              (click)="openDeleteDialog()"
+              [disabled]="isDeleteLoading"
+              class="btn-danger flex items-center gap-2 text-sm"
+            >
+              @if (isDeleteLoading) {
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              } @else {
+                <span class="material-icons text-base">delete_outline</span>
+                Delete
+              }
+            </button>
           </div>
         }
       </div>
@@ -232,6 +247,18 @@
       [confirmStyle]="user.isLocked ? 'primary' : 'danger'"
       (confirmed)="onLockConfirm()"
       (cancelled)="onLockCancel()"
+    ></app-confirm-dialog>
+  }
+
+  <!-- Delete Confirmation Dialog -->
+  @if (showDeleteDialog && user) {
+    <app-confirm-dialog
+      title="Delete User"
+      [message]="'Are you sure you want to delete ' + user.firstName + ' ' + user.lastName + '? This action cannot be undone.'"
+      confirmLabel="Delete User"
+      confirmStyle="danger"
+      (confirmed)="onDeleteConfirm()"
+      (cancelled)="onDeleteCancel()"
     ></app-confirm-dialog>
   }
 </div>

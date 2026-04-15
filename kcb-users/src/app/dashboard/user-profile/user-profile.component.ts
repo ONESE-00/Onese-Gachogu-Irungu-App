@@ -22,9 +22,11 @@ export class UserProfileComponent implements OnInit {
   isPageLoading = true;
   isEditLoading = false;
   isLockLoading = false;
+  isDeleteLoading = false;
   isEditing = false;
 
   showLockDialog = false;
+  showDeleteDialog = false;
   successMessage = '';
   errorMessage = '';
 
@@ -117,9 +119,9 @@ export class UserProfileComponent implements OnInit {
     this.errorMessage = '';
 
     const v = this.editForm.value;
-    const selectedBranch = this.branches.find((b) => b.id === Number(v.branchId));
-    const selectedSub = this.subsidiaries.find((s) => s.id === Number(v.subsidiaryId));
-    const selectedRole = this.roles.find((r) => r.id === Number(v.roleId));
+    const selectedBranch = this.branches.find((b) => Number(b.id) === Number(v.branchId));
+    const selectedSub = this.subsidiaries.find((s) => Number(s.id) === Number(v.subsidiaryId));
+    const selectedRole = this.roles.find((r) => Number(r.id) === Number(v.roleId));
 
     const payload = {
       firstName: v.firstName,
@@ -177,6 +179,28 @@ export class UserProfileComponent implements OnInit {
 
   onLockCancel(): void {
     this.showLockDialog = false;
+  }
+
+  openDeleteDialog(): void {
+    this.showDeleteDialog = true;
+  }
+
+  onDeleteConfirm(): void {
+    this.showDeleteDialog = false;
+    this.isDeleteLoading = true;
+    this.userService.deleteUser(this.user!.id).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard/all-users']);
+      },
+      error: () => {
+        this.isDeleteLoading = false;
+        this.errorMessage = 'Failed to delete user. Please try again.';
+      },
+    });
+  }
+
+  onDeleteCancel(): void {
+    this.showDeleteDialog = false;
   }
 
   goBack(): void {

@@ -15,6 +15,7 @@ export interface User {
   password?: string;
   isActive: boolean;
   isLocked: boolean;
+  isDeleted?: boolean;
   createdAt: string;
 }
 

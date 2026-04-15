@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   User,
   CreateUserPayload,
@@ -26,7 +27,9 @@ export class UserService {
 
   // ─── Users ────────────────────────────────────────────────────────────────────
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.API}/users`);
+    return this.http
+      .get<User[]>(`${this.API}/users`)
+      .pipe(map((users) => users.filter((u) => !u.isDeleted)));
   }
 
   getUserById(userId: string): Observable<User> {
@@ -49,7 +52,9 @@ export class UserService {
         httpParams = httpParams.set(key, String(value));
       }
     });
-    return this.http.get<User[]>(`${this.API}/users`, { params: httpParams });
+    return this.http
+      .get<User[]>(`${this.API}/users`, { params: httpParams })
+      .pipe(map((users) => users.filter((u) => !u.isDeleted)));
   }
 
   createUser(payload: CreateUserPayload): Observable<User> {
@@ -58,6 +63,10 @@ export class UserService {
 
   editUser(userId: number, payload: EditUserPayload): Observable<User> {
     return this.http.patch<User>(`${this.API}/users/${userId}`, payload);
+  }
+
+  deleteUser(userId: number): Observable<User> {
+    return this.http.patch<User>(`${this.API}/users/${userId}`, { isDeleted: true });
   }
 
   lockUser(userId: number): Observable<User> {

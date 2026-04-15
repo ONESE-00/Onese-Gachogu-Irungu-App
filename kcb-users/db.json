@@ -59,9 +59,9 @@
     }
   ],
   "analytics": {
-    "totalUsers": 8,
-    "activeUsers": 5,
-    "inactiveUsers": 2,
+    "totalUsers": 3,
+    "activeUsers": 2,
+    "inactiveUsers": 1,
     "lockedUsers": 1
   },
   "branches": [
