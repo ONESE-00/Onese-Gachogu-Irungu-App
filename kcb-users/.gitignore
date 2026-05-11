@@ -42,3 +42,7 @@ testem.log
 Thumbs.db
 
 /.claude
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
